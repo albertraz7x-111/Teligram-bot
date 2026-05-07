@@ -3,10 +3,17 @@ from flask import Flask, send_from_directory
 import threading
 import os
 
-BOT_TOKEN = "YOUR_TOKEN"
+# ======================
+BOT_TOKEN = "8520087047:AAEbINFxeI5dLH68ZEiSVxKvRH2-8Dvo8W8"
+# ======================
 
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
+
+
+@app.route('/')
+def home():
+    return "Bot is running"
 
 
 @app.route('/user/<chat_id>')
