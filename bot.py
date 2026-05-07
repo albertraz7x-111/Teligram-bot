@@ -1,5 +1,5 @@
 import telebot
-from flask import Flask, send_file
+from flask import Flask, send_from_directory
 import threading
 import os
 
@@ -10,32 +10,32 @@ BOT_TOKEN = "8520087047:AAEbINFxeI5dLH68ZEiSVxKvRH2-8Dvo8W8"
 bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
 
-users = {}
-
 HTML_FILE = "index.html"
 
 
-# /start command
+# ======================
+# Telegram Bot
+# ======================
 @bot.message_handler(commands=['start'])
 def start(message):
-    chat_id = str(message.chat.id)
-
-    users[chat_id] = True
+    chat_id = message.chat.id
 
     link = f"http://YOUR_RENDER_URL/user/{chat_id}"
 
     bot.send_message(chat_id, f"তোমার link:\n{link}")
 
 
-# serve HTML page
+# ======================
+# Web Route
+# ======================
 @app.route('/user/<chat_id>')
 def user_page(chat_id):
-    if chat_id in users:
-        return send_file(HTML_FILE)
-    return "Invalid user"
+    return send_from_directory('.', HTML_FILE)
 
 
-# run bot
+# ======================
+# Run Bot
+# ======================
 def run_bot():
     bot.infinity_polling()
 
@@ -43,6 +43,8 @@ def run_bot():
 threading.Thread(target=run_bot).start()
 
 
-# PORT fix for Render
+# ======================
+# Render PORT FIX
+# ======================
 port = int(os.environ.get("PORT", 5000))
 app.run(host="0.0.0.0", port=port)
